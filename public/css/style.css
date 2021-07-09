@@ -207,3 +207,6 @@ a {
 .glass.show {
   display: block;
 }
+#coin {
+  display: none;
+}
