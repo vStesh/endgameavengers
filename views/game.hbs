@@ -1,0 +1,11 @@
+{{>nav}}
+<div id="render">
+    <div class="game-box">GAME - click button for Start</div>
+
+    <button id="startgamebutton" data-token="{{user.id}}:{{user.token}}">START</button>
+</div>
+
+
+<script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+<script defer src="/js/scriptVS.js"></script>
+<script src="/js/scriptYS.js"></script>

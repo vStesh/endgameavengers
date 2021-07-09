@@ -1,0 +1,18 @@
+<nav>
+    <h4><a href="/">Admin panel</a></h4>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li>
+            <form action="/admin/cardinit/" method="POST">
+                <a href="#" onclick="document.querySelector('#cardinit').click();">cardListInit</a>
+                <button type="submit" id="cardinit" hidden></button>
+            </form>
+        </li>
+        <li>
+            <form action="/user/logout/" method="POST">
+                <a href="#" onclick="document.querySelector('#logout').click();">LogOut</a>
+                <button type="submit" id="logout" hidden></button>
+            </form>
+        </li>
+    </ul>
+</nav>

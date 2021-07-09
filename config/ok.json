@@ -1,0 +1,8 @@
+{
+  "db_test": {
+    "host": "localhost",
+    "name": "endgame",
+    "user": "kovsiannik",
+    "password": "securepass"
+  }
+}

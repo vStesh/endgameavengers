@@ -1,0 +1,73 @@
+{{>nav}}
+
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header">
+                Register form
+            </div>
+            <div class="card-body">
+            <form action="/user/registration" method="POST">
+                <div class="mb-3">
+                    Choose your avatar
+                </div>
+                <div class="mb-3">
+                    <label for="photo" id="card-label"></label>
+                    <input type="radio" name="photo" id="photo" value="/images/heroes/human_hero.png" checked>
+                    <img src="/images/heroes/human_hero.png" width="50" alt="human_hero">
+                    <label for="photo2" id="card-label"></label>
+                    <input type="radio" name="photo" id="photo2" value="/images/heroes/man_hero.png">
+                    <img src="/images/heroes/man_hero.png" width="50" alt="man_hero">
+                    <label for="photo3" id="card-label"></label>
+                    <input type="radio" name="photo" id="photo3" value="/images/heroes/lego_hero.png">
+                    <img src="/images/heroes/lego_hero.png" width="50" alt="lego_hero">
+                    <label for="photo4" id="card-label"></label>
+                    <input type="radio" name="photo" id="photo4" value="/images/heroes/hulk_hero.png">
+                    <img src="/images/heroes/hulk_hero.png" width="50" alt="hulk_hero">
+                    <label for="photo5" id="card-label"></label>
+                    <input type="radio" name="photo" id="photo5" value="/images/heroes/vsteshenko_hero.png">
+                    <img src="/images/heroes/vsteshenko_hero.png" width="50" alt="vsteshenko">
+                </div>
+                <div class="mb-3">
+                <label for="login" class="form-label">Login (nickname)</label>
+                <input type="text" class="form-control" id="login" name="login" minlength="3" placeholder="nickname" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" minlength="6" placeholder="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPass" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPass" name="confirmPass" minlength="6" placeholder="confirm password" required>
+                </div>
+                <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="email" required>
+                </div>
+                {{valid.error}}
+            <button type="submit" class="btn btn-primary">Register User</button>
+            </form>
+            </div>
+            {{#if text}}
+            <h4 class="alert alert-danger mt-4">{{text}}</h4></div>
+            {{/if}}
+        </div>
+        <div id="error-block"></div>
+    </div>
+    <script>
+            const password = document.querySelector('#password');
+            const confirmPass = document.querySelector('#confirmPass');
+            const button = document.querySelector('button');
+            
+        button.addEventListener('click', (e) => {
+            if(password.value !== confirmPass.value){
+                e.preventDefault();
+                document.querySelector('#error-block').innerHTML = `<h4 class="alert alert-danger mt-4">Not correct password, please write again</h4>`;
+                document.querySelectorAll('input[type=password]').forEach(item => {
+                    item.value = "";
+                    password.focus();
+                });
+            }
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>

@@ -1,0 +1,27 @@
+
+    {{>nav}}
+ <div class="container mt-4">
+        <div class="card">
+            <div class="card-header">
+                Login form
+            </div>
+            <div class="card-body">
+            <form action="/user/login" method="POST">
+                <div class="mb-3">
+                <label for="login" class="form-label">Login (nickname)</label>
+                <input type="text" class="form-control" id="login" name="login" minlength="3" placeholder="nickname" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" minlength="6" placeholder="password" required>
+                </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            </div>
+        </div>
+        {{#if text}}
+        <h4 class="alert alert-danger mt-4">{{{text}}}</h4></div>
+        {{/if}}
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+

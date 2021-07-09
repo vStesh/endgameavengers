@@ -1,0 +1,27 @@
+<nav>
+    <h4><a href="/">Marvel card-game</a></h4>
+    <ul>
+        <li><a href="/">Home</a></li>
+        {{#if user}}
+        <li><a href="/login">My games</a></li>
+        <li><a href="/registration">Score</a></li>
+        {{/if}}
+        {{#if menu.login}}
+            <li><a href="/login">Login</a></li>
+        {{/if}}
+        {{#if menu.register}}
+            <li><a href="/registration">Register</a></li>
+        {{/if}}
+        {{#if user.admin}}
+            <li><a href="/admin">Admin panel</a></li>
+        {{/if}}
+        {{#if user}}
+        <li>
+            <form action="/user/logout/" method="POST">
+                <a href="#" onclick="document.querySelector('#logout').click();">LogOut</a>
+                <button type="submit" id="logout" hidden></button>
+            </form>
+        </li>
+        {{/if}}
+    </ul>
+</nav>

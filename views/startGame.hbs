@@ -1,0 +1,106 @@
+
+<div id="render" class="render">
+    <div id="box">
+        <div id="root">
+            <div class="block" draggable="true"></div>
+        </div>
+        <div class="cardCount">Cards: <div class="cardNumber">36</div></div>
+    </div>
+
+    <span class="countdown">Your turn! <div id="countdown">00:00</div></span>
+    <button class="btn">Start</button>
+
+    <div id="playingField">
+        <div class="player_1">
+            <div class="cardField_1">
+                <div class="block" draggable="false"></div>
+            </div>
+            <div class="cardField_1">
+                <div class="block" draggable="false"></div>
+            </div>
+            <div class="cardField_1">
+                <div class="block" draggable="false"></div>
+            </div>
+        </div>
+        <div class="battleField_1" draggable="false" >Enemy card for battle</div>
+        <div class="battleField_2" draggable="false">You card for battle</div>
+        <div class="player_2">
+            <div class="cardField_2">You card 1</div>
+            <div class="cardField_2">You card 2</div>
+            <div class="cardField_2">You card 3</div>
+        </div>
+    </div>
+
+    {{!-- <a class="EndGame" href="/">EndGame</a> --}}
+
+    <div id="coin">
+        <div class="side-a">Player 1</div>
+        <div class="side-b">Player 2</div>
+    </div>
+    <div class="pl_2">
+        <meter class="health"
+               min="0" max="100"
+               low="25" high="50" optimum="100"
+               value="0">
+        </meter>
+        <p class="life-enemy"></p>
+        <div class="img-box"></div>
+        <p class="login2"></p>
+    </div>
+
+    <div class="pl_1">
+        <meter class="health"
+               min="0" max="100"
+               low="25" high="50" optimum="100"
+               value="0">
+        </meter>
+        <p class="life-iam"></p>
+        {{#if user}}
+            <div><img src="{{user.photo}}" alt="{{user.photo}}" class="avatar" draggable="false"></div>
+            
+        {{/if}}
+        <p class="login1">{{user.login}}</p>
+    </div>
+
+    <div class="menuBar">
+        <a href="/menu">Menu</a>
+        {{#if start}}
+        <a id="end-game" href="#">EndGame</a>
+        <a id="start-game" class="hidden" href="#">Start game</a>
+        {{/if}}
+        {{#if join}}
+        <a id="end-game" href="#">EndGame</a>
+        <a id="start-game" class="hidden" href="#">Start game</a>
+        {{/if}}
+    </div>
+
+{{#if start}}
+    <div id="render-start" class="modal-w">
+        <div class="modal__dialog">
+            <div class="modal__content" id="render-start-w">
+                <div data-close class="modal__close">&times;</div>
+                <div class="game-box">Click button for Start</div>
+                <button id="startgamebutton" data-token="{{user.id}}:{{user.token}}">Action!</button>
+            </div>
+        </div>
+    </div>
+{{/if}}
+{{#if join}}
+    <div id="render-join" class="modal-w">
+        <div class="modal__dialog">
+            <div class="modal__content" id="render-join-w">
+                <div class="game-box">click button for join your invite</div>
+                <button id="joingamebutton" data-token="{{user.id}}:{{user.token}}:{{game.id}}-{{game.token}}">JoinGame</button>
+            </div>
+        </div>
+    </div>
+{{/if}}
+</div>
+
+
+
+<script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+<script defer src="/js/scriptVS.js"></script>
+<script src="/js/scriptYS.js"></script>
+
+

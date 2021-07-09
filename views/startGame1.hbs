@@ -1,0 +1,141 @@
+<div class="glass hidden"></div>
+<div id="render" class="render">
+  <div id="box">
+    <div id="root">
+      <div class="block" draggable="true"></div>
+    </div>
+    <div class="cardCount">Cards: <div class="cardNumber">36</div></div>
+  </div>
+  <div class="timer">
+    <span class="countdown"><p></p> <div id="countdown">00:00</div></span>
+  </div>
+  <div id="playingField">
+    <div class="player_1">
+      <div class="cardField_1">
+        <div class="block" draggable="false"></div>
+      </div>
+      <div class="cardField_1">
+        <div class="block" draggable="false"></div>
+      </div>
+      <div class="cardField_1">
+        <div class="block" draggable="false"></div>
+      </div>
+    </div>
+    <div>
+      <div class="battleField_1" draggable="false">Enemy card for battle</div>
+      <div class="battleField_2" draggable="false">You card for battle</div>
+    </div>
+    <div class="player_2">
+      <div class="cardField_2">You card 1</div>
+      <div class="cardField_2">You card 2</div>
+      <div class="cardField_2">You card 3</div>
+    </div>
+  </div>
+
+  <div id="coin">
+    <div class="side-a">{{user.login}}</div>
+    <div class="side-b">Enemy</div>
+  </div>
+  <div id="carta">
+    <div class="side-back"><div class="block" draggable="true"></div>
+    </div>
+    <div class="side-front"><div class="block" draggable="true">
+        <div class="hero_id" style="display:none">3</div>
+        <div class="hero_name" style="display:none">Iron Man</div>
+        <div class="cost">$40</div>
+        <img src="/images/Anthony_Stark.jpg" />
+        <div class="power">
+          <div class="attack">40</div>
+          <div class="defence">60</div>
+        </div></div></div>
+  </div>
+
+  <div class="pl_2">
+    <div class="img-box avatar"></div>
+    <div class="login2"></div>
+    <div class="life-enemy"></div>
+    <meter
+      class="health"
+      min="0"
+      max="100"
+      low="25"
+      high="50"
+      optimum="100"
+      value="0"
+    >
+    </meter>
+  </div>
+
+  <div class="pl_1">
+    {{#if user}}
+      <div class="avatar">
+        <img
+          src="{{user.photo}}"
+          alt="{{user.photo}}"
+          draggable="false"
+        /></div>
+      <div class="login1">{{user.login}}</div>
+    {{/if}}
+    <div class="life-iam"></div>
+    <meter
+      class="health"
+      min="0"
+      max="100"
+      low="25"
+      high="50"
+      optimum="100"
+      value="0"
+    >
+    </meter>
+  </div>
+
+  <div class="menuBar">
+    <a href="/menu">Menu</a>
+    {{#if start}}
+      <a id="end-game" href="#">EndGame</a>
+      <a id="start-game" class="hidden" href="#">Start game</a>
+    {{/if}}
+    {{#if join}}
+      <a id="end-game" href="#">EndGame</a>
+      <a id="start-game" class="hidden" href="#">Start game</a>
+    {{/if}}
+  </div>
+
+  {{#if start}}
+    <div id="render-start" class="modal-w">
+      <div class="modal__dialog">
+        <div class="modal__content" id="render-start-w">
+          <div data-close class="modal__close">&times;</div>
+          <div class="game-box">Click button for Start</div>
+          <button
+            id="startgamebutton"
+            data-token="{{user.id}}:{{user.token}}"
+          >Action!</button>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+  {{#if join}}
+    <div id="render-join" class="modal-w">
+      <div class="modal__dialog">
+        <div class="modal__content" id="render-join-w">
+          <div class="game-box">click button for join your invite</div>
+          <button
+            id="joingamebutton"
+            data-token="{{user.id}}:{{user.token}}:{{game.id}}-{{game.token}}"
+          >JoinGame</button>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+    <div id="battle" class="battle-gif hidden">
+        <img src="/images/battle.gif">
+    </div>
+</div>
+<script
+  src="https://cdn.socket.io/4.1.2/socket.io.min.js"
+  integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg"
+  crossorigin="anonymous"
+></script>
+<script defer src="/js/scriptVS.js"></script>
+<script src="/js/scriptYS1.js"></script>
