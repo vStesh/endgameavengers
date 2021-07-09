@@ -407,9 +407,7 @@ window.onload = function () {
     function animationDistribution() {
         for (let i = 1; i <= root.children.length; i++) {
             let item = root.children[i - 1];
-            console.log(item);
             setTimeout(() => {
-                console.log('Cart ' + i);
                 if (i % 2 === 1) {
                     item.classList.add(`myDistribution_${(i + 1) / 2}`);
                     setTimeout(() => {
@@ -596,13 +594,12 @@ window.onload = function () {
                         box.append(current[0]);
                     }
                 });
+
                 if (field.children.length > 0) {
                     field.style.boxShadow = 'none';
-
                 } else {
                     field.style.boxShadow = '0px 0px 20px 1px lawngreen'
                 }
-                console.log('length Cild!!! ' + field.children.length);
             });
         });
     }

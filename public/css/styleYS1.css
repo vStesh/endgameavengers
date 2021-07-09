@@ -27,14 +27,17 @@ body.game {
   transition: 0.5s;
 }
 .cardCount {
-  position: absolute;
+  position: relative;
   left: 25px;
   top: 180px;
 }
 .cardNumber {
   float: right;
 }
-
+.cardCount,
+.cardNumber {
+  font-weight: 800;
+}
 .timer {
   position: absolute;
   right: 10px;
@@ -55,8 +58,10 @@ body.game {
   position: absolute;
   top: 5px;
   left: 5px;
-  width: 150px;
-  height: 200px;
+  width: fit-content;
+  min-width: 30px;
+  height: fit-content;
+  min-height: 100px;
   transition: 0.5s;
 }
 
@@ -258,7 +263,7 @@ body.game {
 .pl_1 {
   position: absolute;
   right: 5px;
-  bottom: 5px;
+  bottom: 10px;
   width: 180px;
   height: 205px;
   border-radius: 5px;
@@ -569,9 +574,9 @@ body.game {
     top: 485px;
   }
 }
-.myDistribution_2{
+.myDistribution_2 {
   z-index: 50;
-    animation: myDist_2 1s 1 ;
+  animation: myDist_2 1s 1;
 }
 @keyframes myDist_2 {
   0% {
