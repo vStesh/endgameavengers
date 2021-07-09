@@ -662,7 +662,6 @@ body.game {
   }
 }
 .enemyMove_1 {
-  z-index: 50;
   opacity: 1;
   animation: enemyMv_1 0.5s 1 alternate-reverse;
 }
@@ -685,7 +684,6 @@ body.game {
   }
 }
 .enemyMove_2 {
-  z-index: 50;
   opacity: 1;
 
   animation: enemyMv_2 0.5s 1 alternate-reverse;
@@ -709,7 +707,6 @@ body.game {
   }
 }
 .enemyMove_3 {
-  z-index: 50;
   opacity: 1;
 
   animation: enemyMv_3 0.5s 1 alternate-reverse;
