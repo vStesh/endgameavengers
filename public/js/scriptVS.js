@@ -549,12 +549,9 @@ window.onload = function () {
             e.preventDefault();
         });
         battleField_2.addEventListener('drop', function (e) {
-
             this.append(current[0]);
             console.log(e.target.firstElementChild.dataset.card);
             turn(e.target.firstElementChild.dataset.card);
-            console.log(`Карти в руках [${arrPlayer_2}]`);
-            console.log(`Карти в бою [${arrBattle_2}]`);
         })
     };
 
@@ -564,8 +561,7 @@ window.onload = function () {
                 if(item.children.length) {
                     let idCard = item.firstElementChild.dataset.card;
                     game.hand.forEach(it => {
-                        if(it.id === +idCard) {
-
+                        if (it.id === +idCard) {
                             item.firstElementChild.remove();
                             item.insertAdjacentHTML('beforeend', getHtmlCard(it));
                         }
@@ -599,9 +595,13 @@ window.onload = function () {
                         arrPlayer_2.length = 3
                         box.append(current[0]);
                     }
-                    field.style.boxShadow = 'none'
                 });
-                field.style.boxShadow = '0px 0px 20px 1px lawngreen'
+
+                if (field.children.length > 0) {
+                    field.style.boxShadow = 'none';
+                } else {
+                    field.style.boxShadow = '0px 0px 20px 1px lawngreen'
+                }
             });
         });
     }

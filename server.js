@@ -88,28 +88,30 @@ wsgame.on('connection', (socket) => {
         message.split('; ').forEach(item => {
             cookie[item.split('=')[0]] = item.split('=')[1];
         });
-        let [id, token] = cookie.token.split('-');
-        if(cookie.gameToken) {
-            let [gameId, gameToken] = cookie.gameToken.split('-');
-           let currentGame = await (new WsController()).sendState(id, token, {id: gameId, token: gameToken});
-            if(currentGame.status) {
-                socket.join(currentGame.room + id);
-                if(currentGame.game.user1_id === +id) {
-                    wsgame.to(currentGame.room + id).emit('getStatus', {status: currentGame.status, game: currentGame.user1, room: currentGame.room + id});
+        if(cookie.token) {
+            let [id, token] = cookie.token.split('-');
+            if(cookie.gameToken) {
+                let [gameId, gameToken] = cookie.gameToken.split('-');
+               let currentGame = await (new WsController()).sendState(id, token, {id: gameId, token: gameToken});
+                if(currentGame.status) {
+                    socket.join(currentGame.room + id);
+                    if(currentGame.game.user1_id === +id) {
+                        wsgame.to(currentGame.room + id).emit('getStatus', {status: currentGame.status, game: currentGame.user1, room: currentGame.room + id});
+                    } else {
+                        wsgame.to(currentGame.room + id).emit('getStatus', {status: currentGame.status, game: currentGame.user2, room: currentGame.room + id});
+                    }
+
+                    //wsgame.to(currentGame.room + '2').emit('getStatus', {status: currentGame.status, game: currentGame.user2});
                 } else {
-                    wsgame.to(currentGame.room + id).emit('getStatus', {status: currentGame.status, game: currentGame.user2, room: currentGame.room + id});
+
+                    // wsgame.to(currentGame.room + '1').emit('getStatus', {status: currentGame.status, game: currentGame.user1});
+                    // wsgame.to(currentGame.room + '2').emit('getStatus', {status: currentGame.status, game: currentGame.user2});
                 }
+                console.log(cookie);
 
-                //wsgame.to(currentGame.room + '2').emit('getStatus', {status: currentGame.status, game: currentGame.user2});
-            } else {
-
-                // wsgame.to(currentGame.room + '1').emit('getStatus', {status: currentGame.status, game: currentGame.user1});
-                // wsgame.to(currentGame.room + '2').emit('getStatus', {status: currentGame.status, game: currentGame.user2});
+                console.log('getStatus');
+                //console.log(id, token);
             }
-            console.log(cookie);
-
-            console.log('getStatus');
-            //console.log(id, token);
         }
 
     });
