@@ -561,6 +561,7 @@ window.onload = function () {
         battleField_2.addEventListener('drop', function (e) {
             this.append(current[0]);
             // console.log(e.target.firstElementChild.dataset.card);
+            glass(1);
             turn(e.target.firstElementChild.dataset.card);
         })
     };
