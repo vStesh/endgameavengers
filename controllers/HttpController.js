@@ -4,6 +4,7 @@ const SiteController = require('./SiteController');
 const config = require('./../config/config')();
 // const User = require('./../models/user');
 const Game = require('./../models/game');
+const Rating = require('./../models/rating');
 
 class HttpController extends SiteController {
     //title = config.title;
@@ -23,6 +24,8 @@ class HttpController extends SiteController {
                 // if(await game.getOne({id: request.session.user.id, status: 'new'})) {
                 //
                 // }
+                console.log('------> Cookie');
+                console.log(request.session.cookie);
                 console.log(request.session.user);
                 response.render(config.tmpl.game, this._getProperties({user: request.session.user, add: {start: 1, class_body: 'game'}}));
             } else {
@@ -40,6 +43,9 @@ class HttpController extends SiteController {
         if (req.session.user) {
             res.redirect('/');
         } else {
+            if(req.query?.joinGame) {
+                res.cookie('joinGame', req.query.joinGame);
+            }
             res.render('login', this._getProperties({title: 'Login', menu: {login: 0, register: 1}, query: req.query}));
         }
     }
@@ -74,8 +80,22 @@ class HttpController extends SiteController {
     menu(req, res) {
         res.render('menu')
     }
-    statistic(req, res){
-        res.render('statistic')
+    async statistic(req, res){
+        let rating = new Rating();
+        let statistic = await rating.getTable();
+        console.log('-----------> Current user statistic');
+        console.log(req.session.user?.id);
+        console.log(statistic);
+        statistic = statistic.map((item, key) => {
+            item.num = key +1;
+            if(item.user_id === req.session?.user?.id) {
+                item.my = 1;
+            }
+
+            return item;
+        });
+
+        res.render('statistic', {stat: statistic});
     }
 
     // _getProperties(param = {}) {

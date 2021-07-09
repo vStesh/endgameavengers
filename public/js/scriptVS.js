@@ -1,6 +1,6 @@
 'use strict'
 window.onload = function () {
-    let startbutton = document.querySelector('#startgamebutton');
+    let startbutton = document.querySelector('.startgamebutton');
     if (startbutton) {
         startbutton.addEventListener('click', (e) => startGame(e));
     }
@@ -8,7 +8,9 @@ window.onload = function () {
     if (joinbutton) {
         joinbutton.addEventListener('click', (e) => joinGame(e));
     }
-    document.querySelector('#end-game').addEventListener('click', endGame);
+    if(document.querySelector('#end-game')){
+        document.querySelector('#end-game').addEventListener('click', endGame);
+    }
     if (document.querySelector('.modal__close')) {
         document.querySelector('.modal__close').addEventListener('click', closeModal);
     }
@@ -19,18 +21,35 @@ window.onload = function () {
     const cardShirt = '<div class="block" draggable="false"></div>';
     startGameBtn.addEventListener('click', backToStart)
 
+    // Значения задержек для хода анимации
+    const delay = {
+        battleOrNextTurn: 2000,
+        showEnemyCard: 1100
+    }
+
 
     let socket = io('/game');
     let game = {};
     let autoTurnId;
     let turnEnemy = true;
+    let getStatus = true;
+
+    const inGame = cookieToObj(document.cookie).joinGame;
+
+    if(document.querySelector('#joingamebutton') && inGame) {
+        let userToken = document.querySelector('#joingamebutton').dataset.token;
+        let [gameId, gameToken] = inGame.split('%3A');
+        document.querySelector('#joingamebutton').dataset.token = userToken + ':' + gameId + '-' + gameToken;
+    }
+
 
     socket.emit('getStatus', document.cookie);
     socket.on('getStatus', (message) => {
         console.log(message);
         if (message.status) {
             game = JSON.parse(JSON.stringify(message.game));
-            game.hand = JSON.parse(message.game.hand);
+            // game.hand = JSON.parse(message.game.hand);
+            game.hand = message.game.hand;
             game.room = message.room;
             let enemy = message.game.enemy;
             let iam = message.game.iam;
@@ -45,9 +64,21 @@ window.onload = function () {
                 document.querySelector('#coin').outerHTML = '';
             }
             document.querySelector('#render-start').outerHTML = '';
+            glass(1);
+            if(!game.turn) {
+                renderCards(message.game.hand);
+                animationDistribution();
+            } else {
+                // Дописать функцию рендера на свои места
+                renderAfterTurn(message);
+                // renderCards(message.game.hand);
+                // animationDistribution();
+            }
 
-            renderCards(JSON.parse(message.game.hand));
+
             initSy1();
+
+            getStatus = false;
         }
     });
 
@@ -55,6 +86,7 @@ window.onload = function () {
         if (message.status) {
             console.log(message);
             document.cookie = `gameToken=${message.gameToken} ; path=/; max-age=3600`;
+            document.cookie = `joinGame=1; path=/; max-age=0`;
             window.location.assign('/');
         }
         console.log('Message from server: ', message);
@@ -76,38 +108,83 @@ window.onload = function () {
     socket.on('turn', (message) => {
         console.log(message);
         game = message.game;
+
+        renderAfterTurn(message);
+
+    });
+
+    function renderAfterTurn(message) {
         clearInterval(timerInterval);
 
-        if(game.battle.enemy && turnEnemy) {
-            showEnemyCard(message.game.battle.enemy);
-            turnEnemy = false;
-        }
-        if(game.battle.lose) {
-            turnEnemy = true;
-        }
-        if(message.game.battle.enemy && message.game.battle.iam) {
-            console.log('show battle');
-            showBattle();
-            setTimeout(() => {
-                changeUserInfo();
-                if(game.result?.status === 'gameOver') {
-                    console.log('----> Game Over!!!');
-                    if(game.result.winner === 'iam') {
-                        alert('Game Over!! YOU WINN!!!!');
-                    } else {
-                        alert('Game Over!! YOU LOOOOOOOOOOSER!!!!');
-                    }
-                    window.location.assign('/');
-                } else {
-                    trashCards();
-                    addCards();
-                    setTimeout(() => nextTurn(message), 1000);
-                }
-            }, 3000);
+        if(getStatus) {
+            showMyCards();
+            if(game.battle.iam  && game.hand.length < 3) {
+                showMyBattleCard(message.game.battle.iam);
+            }
+            showEnemyCards();
+            if(game.battle.enemy && !game.battle.lose) {
+                showEnemyBattleCard(message.game.battle.enemy, 0);
+                turnEnemy = false;
+            }
+            nextTurn({myTurn: game.myTurn});
         } else {
-            nextTurn(message);
+            if(game.battle.enemy && turnEnemy) {
+                showEnemyBattleCard(message.game.battle.enemy);
+                turnEnemy = false;
+            }
+            if(game.battle.iam && turnEnemy) {
+                showMyBattleCard(message.game.battle.iam);
+            }
+            if(game.battle.lose) {
+                turnEnemy = true;
+            }
+            setTimeout(() => {
+                if(message.game.battle.enemy && message.game.battle.iam) {
+                console.log('show battle');
+                showBattle();
+                setTimeout(() => {
+                    changeUserInfo();
+                    if(game.result?.status === 'gameOver') {
+                        console.log('----> Game Over!!!');
+                        if(game.result.winner === 'iam') {
+                            alert('Game Over!! YOU WINN!!!!');
+                        } else {
+                            alert('Game Over!! YOU LOOOOOOOOOOSER!!!!');
+                        }
+                        document.cookie = 'gameToken=111; ; max-age=0';
+                        window.location.assign('/');
+                    } else {
+                        trashCards();
+                        addCards();
+                        setTimeout(() => nextTurn(message), 1000);
+                    }
+                }, 3000);
+            } else {
+                nextTurn(message);
+            };
+            }, delay.battleOrNextTurn);
+
         }
-    });
+    };
+
+    function showMyCards() {
+        document.querySelectorAll('.cardField_2').forEach((item, key) => {
+            if(item.children.length === 0) {
+                if(!(game.battle.iam && key === 2) || game.battle.lose) {
+                    item.insertAdjacentHTML('beforeend', getHtmlCard(game.hand[key]));
+                }
+            };
+        });
+    }
+
+    function showEnemyCards() {
+        document.querySelectorAll('.cardField_1').forEach((item, key) => {
+            item.insertAdjacentHTML('beforeend', cardShirt);
+        });
+        if(game.battle.enemy) {
+            awayEnemyCard();
+        }
+    }
 
     // Визуальная раздача карт противнику и себе
     function addCards() {
@@ -120,7 +197,6 @@ window.onload = function () {
                 console.log(getHtmlCard(game.hand, 2));
                 item.insertAdjacentHTML('beforeend', getHtmlCard(game.hand[2], 2));
             };
-            console.log(item.children);
         });
         initCards();
     }
@@ -134,33 +210,74 @@ window.onload = function () {
     }
 
     function showBattle() {
-        document.querySelector('.battle-gif').classList.toggle('hidden');
+        document.querySelector('.battleField_2').firstElementChild.classList.add("thisBlock");
+
         setTimeout(() => {
-            document.querySelector('.battle-gif').classList.toggle('hidden');
+            document.querySelector('.battleField_2').firstElementChild.classList.remove("thisBlock")
         }, 3000);
     }
 
     function nextTurn(message) {
         if(!message.myTurn){
             console.log(message.myTurn);
-            document.querySelector('.glass').classList.remove('hidden');
-            document.querySelector('.glass').classList.add('show');
+            glass(1);
+            // document.querySelector('.glass').classList.remove('hidden');
+            // document.querySelector('.glass').classList.add('show');
             document.querySelector('.countdown p').innerHTML = `<b>Enemy's</b> turn`;
         }
         if(message.myTurn){
-            document.querySelector('.glass').classList.remove('add');
-            document.querySelector('.glass').classList.add('hidden');
+            glass(0);
+            // document.querySelector('.glass').classList.remove('add');
+            // document.querySelector('.glass').classList.add('hidden');
             document.querySelector('.countdown p').innerHTML = `<b>Your</b> turn`;
         }
         startTimer();
     }
-    function showEnemyCard(card) {
+    function showEnemyBattleCard(card, showDelay = delay.showEnemyCard) {
+        console.log('delay');
+        console.log(showDelay);
         let randCard = Math.floor(Math.random() * (3));
+        let cls = ''
+        if (randCard == 0) {
+            cls = 'enemyMove_1';
+        }
+        if (randCard == 1) {
+            cls = 'enemyMove_2';
+        }
+        if (randCard == 2) {
+            cls = 'enemyMove_3';
+        }
+        setTimeout(() => {
+            awayEnemyCard(randCard);
+        }, showDelay);
+
+        let div = `
+            <div class="block ${cls}">
+                <div class="hero_id" style='display:none'>${card.id}</div>
+                <div class="hero_name" style='display:none'>${card.name}</div>
+                <div class="cost">$${card.cost}</div>
+                <img src="/images/${card.image}">
+                <div class="power">
+                    <div class="attack">${card.attack}</div>
+                    <div class="defence">${card.defence}</div>
+                </div>
+            </div>`;
+        setTimeout(() => {
+            document.querySelector('.battleField_1').insertAdjacentHTML('beforeend', div);
+        }, showDelay ? showDelay - 150 : 0);
+    }
+
+    // Убирает одну карту противника рендомно
+    function awayEnemyCard(randCard) {
+
         document.querySelectorAll('.cardField_1').forEach((item, key) => {
             if(randCard === key) {
                 item.innerHTML = '';
             }
         });
+    }
+
+    function showMyBattleCard(card) {
         let div = `
             <div class="block">
                 <div class="hero_id" style='display:none'>${card.id}</div>
@@ -172,7 +289,10 @@ window.onload = function () {
                     <div class="defence">${card.defence}</div>
                 </div>
             </div>`;
-        document.querySelector('.battleField_1').insertAdjacentHTML('beforeend', div);
+        if(document.querySelector('.battleField_2').children.length === 0) {
+            document.querySelector('.battleField_2').insertAdjacentHTML('beforeend', div);
+        }
+
     }
 
     function endGame(e) {
@@ -182,6 +302,23 @@ window.onload = function () {
         window.location.assign('/');
     }
 
+    //console.log(document.cookie);
+    function cookieToObj(cook){
+        let obj = {};
+        cook.split('; ').forEach(item => {
+            obj[item.split('=')[0]] = item.split('=')[1];
+        })
+        return obj;
+    }
+
+    if(inGame){
+        document.querySelector('.second_modal_dialog').classList.remove('hidden');
+        // modalBlock.classList.add('hidden');
+        document.querySelector('.modal__dialog').classList.add('hidden')
+    }
+    //console.log(inGame);
+
+
     function closeModal() {
         modalBlock.classList.add('hidden');
         endGameBtn.classList.add('hidden');
@@ -189,6 +326,18 @@ window.onload = function () {
         startGameBtn.classList.add('show');
 
     }
+
+    document.addEventListener('keydown', e => {
+        if(e.code === 'Escape' && !modalBlock.classList.contains('hidden')){
+            closeModal();
+        }
+    })
+    modalBlock.addEventListener('click', e => {
+        if(e.target === modalBlock || e.target.getAttribute('data-close') == ''){
+            closeModal();
+        }
+    })
+
     function backToStart() {
         window.location.assign('/');
     }
@@ -213,17 +362,18 @@ window.onload = function () {
         });
     }
 
-
-    document.querySelector('#render-start-w').onclick = (e) => {
-        const elem = e.target;
-        if (elem.classList.contains('copy-text')) {
-            navigator.clipboard.writeText(elem.innerHTML)
-                .then(() => {
-                    document.querySelector('.copy-text').innerHTML = '';
-                    document.querySelector('.please-text').innerHTML = '<b>Send</b> link to your enemy'
-                    document.querySelector('.par-copy').innerHTML = 'copied';
-                })
-                .catch(err => console.log(err));
+    if(document.querySelector('#render-start-w')) {
+        document.querySelector('#render-start-w').onclick = (e) => {
+            const elem = e.target;
+            if (elem.classList.contains('copy-text')) {
+                navigator.clipboard.writeText(elem.innerHTML)
+                    .then(() => {
+                        document.querySelector('.copy-text').innerHTML = '';
+                        document.querySelector('.please-text').innerHTML = '<b>Send</b> link to your enemy'
+                        document.querySelector('.par-copy').innerHTML = 'copied';
+                    })
+                    .catch(err => console.log(err));
+            }
         }
     }
 
@@ -236,7 +386,7 @@ window.onload = function () {
 
     //рендер карт
     function renderCards(hand) {
-        hand.forEach((hero) => {
+        hand.forEach((hero, key) => {
             card += `
             <div class="block" draggable="true" data-card="${hero.id}">
                 <div class="hero_id" style='display:none'>${hero.id}</div>
@@ -247,10 +397,44 @@ window.onload = function () {
                     <div class="attack">${hero.attack}</div>
                     <div class="defence">${hero.defence}</div>
                 </div>
-            </div>`;
+            </div>
+            <div class="block" draggable="false" ></div>`;
         });
         root.innerHTML = card;
     }
+
+    // Анимация раздачи карт
+    function animationDistribution() {
+        for (let i = 1; i <= root.children.length; i++) {
+            let item = root.children[i - 1];
+            console.log(item);
+            setTimeout(() => {
+                console.log('Cart ' + i);
+                if (i % 2 === 1) {
+                    item.classList.add(`myDistribution_${(i + 1) / 2}`);
+                    setTimeout(() => {
+                        item.classList.remove(`myDistribution_${(i + 1) / 2}`);
+                    }, 949);
+                    setTimeout(() => {
+                        let myCard = document.querySelector(`#my_card_${(i + 1) / 2}`);
+                        myCard.append(item);
+                        myCard.style.boxShadow = 'none';
+                    }, 950);
+                } else {
+                    item.classList.add(`enemyDistribution_${(i) / 2}`);
+                    setTimeout(() => {
+                        item.classList.remove(`enemyDistribution_${(i) / 2}`);
+                    }, 949);
+                    setTimeout(() => {
+                        let myCard = document.querySelector(`#enemy_card_${(i) / 2}`);
+                        myCard.append(item);
+                        myCard.style.boxShadow = 'none';
+                    }, 950);
+                }
+            }, i * 500);
+        }
+    };
+
 
     function getHtmlCard(hero) {
         return `
@@ -271,6 +455,7 @@ window.onload = function () {
     }
 
     function myTurn(){
+        glass(0);
         // console.log(turn(arrBattle_2))
         if(document.querySelector('.base-timer__label').innerHTML == 30){
             document.querySelector('.countdown p').innerHTML = `<b>Your</b> turn`;
@@ -282,11 +467,14 @@ window.onload = function () {
     }
 
     function enemyTurn() {
+        glass(1);
         if(document.querySelector('.base-timer__label').innerHTML == 30){
             document.querySelector('.countdown p').innerHTML = `<b>Enemy's</b> turn`;
+
+
             startTimer();
-            document.querySelector('.glass').classList.remove('hidden');
-            document.querySelector('.glass').classList.add('show');
+            // document.querySelector('.glass').classList.remove('hidden');
+            // document.querySelector('.glass').classList.add('show');
             
         }
         // myTurn()
@@ -340,7 +528,9 @@ window.onload = function () {
         setTimeout(function () {
             coin.style.display = 'none';
             sendFirstTurn(firstTurn);
+            glass(0);
         }, 6000);
+
     });
 
     function initSy1() {
@@ -371,14 +561,16 @@ window.onload = function () {
     function initCards() {
         if(game.turn) {
             document.querySelectorAll('.cardField_2').forEach(item => {
-                let idCard = item.firstElementChild.dataset.card;
-                game.hand.forEach(it => {
-                    if(it.id === +idCard) {
+                if(item.children.length) {
+                    let idCard = item.firstElementChild.dataset.card;
+                    game.hand.forEach(it => {
+                        if(it.id === +idCard) {
 
-                        item.firstElementChild.remove();
-                        item.insertAdjacentHTML('beforeend', getHtmlCard(it));
-                    }
-                });
+                            item.firstElementChild.remove();
+                            item.insertAdjacentHTML('beforeend', getHtmlCard(it));
+                        }
+                    });
+                }
             });
         }
 
@@ -414,6 +606,15 @@ window.onload = function () {
         });
     }
 
+    function glass(event) {
+        if(event) {
+            document.querySelector('.glass').classList.add('show');
+        } else {
+            document.querySelector('.glass').classList.remove('show');
+        }
+
+    }
+
     function changeUserInfo() {
 
         document.querySelector('.life-enemy').innerHTML = game.enemy.life;
@@ -425,3 +626,5 @@ window.onload = function () {
     }
      
 }
+
+

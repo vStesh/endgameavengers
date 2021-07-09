@@ -48,8 +48,20 @@ class WsController extends SiteController {
         let game = new Game();
         // Проверяем существование игры
         let currentGame = await game.getOne({id: mygame.id, token: mygame.token, status: 'active'});
-        if(currentGame) {
-
+        if(!currentGame) {
+            return {status: 0};
+        }
+        let turn = new Turn();
+        // read previous turn
+        let lastTurn = await turn.getLast({game_id: currentGame.id});
+        if(lastTurn) {
+            return {
+                status: 1,
+                room: currentGame.id + ':' + currentGame.token,
+                game: currentGame,
+                user1: JSON.parse(lastTurn.state).userInfo.user1,
+                user2: JSON.parse(lastTurn.state).userInfo.user2};
+        } else if (currentGame) {
             return {status: 1, room: currentGame.id + ':' + currentGame.token, game: currentGame, user1: await this._getUserState(currentGame, currentGame.user1_id), user2: await this._getUserState(currentGame, currentGame.user2_id)};
         } else {
             return {status: 0};
@@ -457,7 +469,7 @@ class WsController extends SiteController {
                 turn: game.current_turn,
                 iam: iam,
                 enemy: enemy,
-                hand: (user === 1) ? game.hand1 : game.hand2,
+                hand: (user === 1) ? JSON.parse(game.hand1) : JSON.parse(game.hand2),
                 cards: JSON.parse(game.deck).length
             }
         }

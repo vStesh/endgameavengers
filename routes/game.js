@@ -14,7 +14,8 @@ let isUser = function(request, response, next) {
     if(!request.session?.user) {
         console.log(request.session?.user);
         console.log(request);
-        response.redirect('/login?url=' + request.originalUrl);
+
+        response.redirect('/login?joinGame=' + request.query.token);
     } else next();
 }
 

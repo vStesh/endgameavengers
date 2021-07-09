@@ -102,6 +102,7 @@ wsgame.on('connection', (socket) => {
 
                 //wsgame.to(currentGame.room + '2').emit('getStatus', {status: currentGame.status, game: currentGame.user2});
             } else {
+
                 // wsgame.to(currentGame.room + '1').emit('getStatus', {status: currentGame.status, game: currentGame.user1});
                 // wsgame.to(currentGame.room + '2').emit('getStatus', {status: currentGame.status, game: currentGame.user2});
             }
