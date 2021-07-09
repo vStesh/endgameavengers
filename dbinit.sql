@@ -82,7 +82,10 @@ ALTER TABLE users ADD COLUMN token VARCHAR(25) AFTER status;
 
 ALTER TABLE games MODIFY status ENUM('new', 'active', 'finish', 'canceled') NOT NULL DEFAULT 'new';
 
+ALTER TABLE games MODIFY user2_id INT NULL DEFAULT NULL;
+
 ALTER TABLE turns ADD COLUMN state TEXT AFTER number;
+
 
 CREATE TABLE IF NOT EXISTS rating (
        id INT AUTO_INCREMENT PRIMARY KEY,
@@ -95,3 +98,9 @@ CREATE TABLE IF NOT EXISTS rating (
        CONSTRAINT rating_users_fk
            FOREIGN KEY (user_id)  REFERENCES users (id) ON DELETE CASCADE
 );
+
+SELECT r.user_id, u.login, r.score, SUM(r.score) AS sum, COUNT(r.user_id) AS count
+FROM rating AS r JOIN users AS u ON u.id=r.user_id GROUP BY r.user_id ORDER BY sum DESC, count ASC;
+
+SELECT r.user_id, u.login, r.score
+FROM rating AS r JOIN users AS u ON u.id=r.user_id;

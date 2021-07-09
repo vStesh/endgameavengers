@@ -106,7 +106,7 @@ a {
   overflow: hidden;
   background-color: rgba(0, 0, 0, 0.5);
 }
-.modal__dialog {
+.modal__dialog{
   max-width: 500px;
   margin: 40px auto;
 }
@@ -141,7 +141,29 @@ a {
 .modal__close:hover{
   color: red;
 }
-#startgamebutton{
+.second_modal_dialog{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 800px;
+  height: 145px;
+  background-color: rgb(138, 138, 138);
+  border-radius: 5px;
+  margin: 150px;
+  padding: 15px;
+}
+.second_modal_dialog .game-box{
+  margin-top: 5px;
+}
+.join_game_btn{
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: medium;
+  text-decoration: none;
+  outline: none;
+}
+
+.startgamebutton{
   border-radius: 5px;
   margin-top: 50px;
   background-color: rgb(17, 16, 16);
@@ -151,8 +173,9 @@ a {
   text-decoration: unset;
   color: white;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  outline: none;
 }
-#startgamebutton:hover{
+.startgamebutton:hover{
   background-color: rgb(148, 37, 37);
   box-shadow: 0 0 10px rgb(148, 37, 37);
 }
@@ -180,4 +203,7 @@ a {
   position: absolute;
   top: 50vh;
   left: 50vw;
+}
+.glass.show {
+  display: block;
 }

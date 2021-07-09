@@ -195,10 +195,10 @@ coin.addEventListener('click', function () {
    }, 6000);
 });
 
-//carta
-let carta = document.querySelector('#carta');
-carta.addEventListener('click', function () {
-   carta.classList.add('tails');
-
-});
+// //carta
+// let carta = document.querySelector('#carta');
+// carta.addEventListener('click', function () {
+//    carta.classList.add('tails');
+//
+// });
 

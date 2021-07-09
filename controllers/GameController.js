@@ -18,23 +18,8 @@ class GameController extends SiteController {
         let [id, token] = request.query.token.split(':');
         console.log("id, token");
         console.log(id, token);
-        // let game = new Game();
-        // let currentGame = await game.getOne({id: id, token: token});
-        // currentGame.user2_id = request.session.user.id;
-        // let init = await this._init();
-        // let result = await game.save({
-        //     id: currentGame.id,
-        //     user2_id: request.session.user.id,
-        //     deck: JSON.stringify(init.deck),
-        //     hand1: JSON.stringify(init.hand1),
-        //     hand2: JSON.stringify(init.hand2),
-        //     status: 'active'
-        // });
-        // currentGame = await game.getOne({id: id, token: token});
-        //
-        //response.redirect('/');
-        //response.render('joinGame', this._getProperties({user: request.session.user, add: {game: {id: id, token: token}}}));
-        response.render(config.tmpl.game, this._getProperties({user: request.session.user, add: {join: 1, game: {id: id, token: token}}}));
+        // response.cookie('joinGame', request.query.token);
+        response.render(config.tmpl.game, this._getProperties({user: request.session.user, add: {join: 1, game: {id: id, token: token}, class_body: 'game'}}));
     }
 
 

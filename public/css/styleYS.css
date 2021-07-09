@@ -376,4 +376,5 @@ body.game {
 .game-box{
   font-family: Georgia, 'Times New Roman', Times, serif;
   font-size: xx-large;
+  outline: none;
 }
