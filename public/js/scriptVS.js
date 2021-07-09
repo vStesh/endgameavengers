@@ -172,9 +172,7 @@ window.onload = function () {
             if (item.children.length === 0) {
                 if (!(game.battle.iam && key === 2) || game.battle.lose) {
                     item.insertAdjacentHTML('beforeend', getHtmlCard(game.hand[key]));
-                    item.style.boxShadow = 'none';
                 }
-                item.style.boxShadow = 'none';
             };
         });
     }
@@ -198,7 +196,6 @@ window.onload = function () {
                 console.log('show card');
                 console.log(getHtmlCard(game.hand, 2));
                 item.insertAdjacentHTML('beforeend', getHtmlCard(game.hand[2], 2));
-                item.style.boxShadow = 'none';
             };
         });
         initCards();
@@ -567,12 +564,9 @@ window.onload = function () {
                         if (it.id === +idCard) {
                             item.firstElementChild.remove();
                             item.insertAdjacentHTML('beforeend', getHtmlCard(it));
-                            item.style.boxShadow = 'none';
                         }
                     });
-                    item.style.boxShadow = 'none';
                 }
-                item.style.boxShadow = 'none';
             });
         }
 
@@ -601,10 +595,14 @@ window.onload = function () {
                         arrPlayer_2.length = 3
                         box.append(current[0]);
                     }
-                    field.style.boxShadow = 'none';
                 });
-                console.log('length Cild!!! '+field.firstChild.length);
-                field.style.boxShadow = '0px 0px 20px 1px lawngreen'
+                if (field.children.length > 0) {
+                    field.style.boxShadow = 'none';
+
+                } else {
+                    field.style.boxShadow = '0px 0px 20px 1px lawngreen'
+                }
+                console.log('length Cild!!! ' + field.children.length);
             });
         });
     }
