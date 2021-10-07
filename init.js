@@ -21,8 +21,10 @@ const connect = (query) => {
 
   const test = 'SHOW TABLES;';
 
-if(connect(test)) {
-    console.log('БД подключена')
+const testRes = connect(test);
+if(testRes) {
+    console.log('БД подключена');
+    console.log()
 } else {
     console.log('Ошибка подключения к БД')
 }
