@@ -11,11 +11,11 @@ const connect = (query) => {
     connection.connect();
     let result;
     try {
-        result = this.connection.promise().query(query);
+        result = connection.promise().query(query);
     } catch (err) {
         console.error(err)
     }
-    this.connection.end();
+    connection.end();
     return result;
   }
 
