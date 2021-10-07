@@ -25,7 +25,7 @@ const connect = (query) => {
 
 const start = async () => {
 
-    let testRes = await connect(test);
+    let testRes = connect(test);
     if(testRes) {
         console.log('БД подключена');
         console.log()
@@ -44,11 +44,11 @@ const start = async () => {
     );
     `;
 
-    testRes = await connect(query1);
+    testRes =  connect(query1);
 
     const query2 = 'SELECT * FROM users;';
 
-    testRes = await connect(query2);
+    testRes =  connect(query2);
 
 }
 
