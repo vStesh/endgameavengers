@@ -1,6 +1,8 @@
 const mysql = require("mysql2");
 const config = require('./config/config')();
 
+console.log(process.env.DB_HOST);
+
 const connect = (query) => {
     const connection = mysql.createConnection({
         host     : config.dbtest ? config.db_test.host : (process.env.DB_HOST || config.db.host),
