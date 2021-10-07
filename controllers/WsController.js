@@ -88,7 +88,8 @@ class WsController extends SiteController {
                 type: lastTurn ? ((lastTurn.number % 2) ? 'defence' : 'attack') : 'attack',
                 number: lastTurn ? lastTurn.number + 1 : 1
             };
-            currentTurn.state = JSON.stringify(await this._getState(currentTurn, lastTurn, mygame, currentGame));
+            let currentState = await this._getState(currentTurn, lastTurn, mygame, currentGame);
+            currentTurn.state = JSON.stringify(currentState);
 
             console.log('-----> State: ----->');
             console.log(JSON.parse(currentTurn.state));
@@ -106,9 +107,9 @@ class WsController extends SiteController {
             return {
                 status: 1,
                 room: currentGame.id + ':' + currentGame.token,
-                game: JSON.parse(currentTurn.state),
-                user1: JSON.parse(currentTurn.state).userInfo.user1,
-                user2: JSON.parse(currentTurn.state).userInfo.user2};
+                game: currentState,
+                user1: currentState.userInfo.user1,
+                user2: currentState.userInfo.user2};
         } else {
             return {status: 0};
         }

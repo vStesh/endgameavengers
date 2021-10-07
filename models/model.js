@@ -82,10 +82,10 @@ class Model {
   _connect(query) {
       console.log(query);
     this.connection = mysql.createConnection({ 
-        host     : config.dbtest ? config.db_test.host : config.db.host,
-        user     : config.dbtest ? config.db_test.user : config.db.user,
-        password : config.dbtest ? config.db_test.password : config.db.password,
-        database : config.dbtest ? config.db_test.name : config.db.name
+        host     : config.dbtest ? config.db_test.host : (process.env.DB_HOST || config.db.host),
+        user     : config.dbtest ? config.db_test.user : (process.env.DB_USER || config.db.user),
+        password : config.dbtest ? config.db_test.password : (process.env.DB_PASSWORD || config.db.password),
+        database : config.dbtest ? config.db_test.name : (process.env.DB_NAME || config.db.name)
     });
     this.connection.connect();
     let result;

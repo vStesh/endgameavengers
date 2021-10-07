@@ -68,6 +68,9 @@ window.onload = function () {
             if(!game.turn) {
                 renderCards(message.game.hand);
                 animationDistribution();
+                if(document.querySelector('#coin')) {
+                    document.querySelector('#coin').setAttribute('style', "display: block;");
+                }
             } else {
                 // Дописать функцию рендера на свои места
                 renderAfterTurn(message);
@@ -140,7 +143,7 @@ window.onload = function () {
             }
             setTimeout(() => {
                 if(message.game.battle.enemy && message.game.battle.iam) {
-                console.log('show battle');
+                // console.log('show battle');
                 showBattle();
                 setTimeout(() => {
                     changeUserInfo();
@@ -210,16 +213,23 @@ window.onload = function () {
     }
 
     function showBattle() {
-        document.querySelector('.battleField_2').firstElementChild.classList.add("thisBlock");
+        if(game.battle.lose.iam > game.battle.lose.enemy) {
+            document.querySelector('.battleField_2').firstElementChild.classList.add("thisBlock");
+            setTimeout(() => {
+                document.querySelector('.battleField_2').firstElementChild.classList.remove("thisBlock");
+            }, 3000);
+        } else {
+            document.querySelector('.battleField_1').firstElementChild.classList.add("enemyBlock");
+            setTimeout(() => {
+                document.querySelector('.battleField_1').firstElementChild.classList.remove("enemyBlock");
+            }, 3000);
+        }
 
-        setTimeout(() => {
-            document.querySelector('.battleField_2').firstElementChild.classList.remove("thisBlock")
-        }, 3000);
     }
 
     function nextTurn(message) {
         if(!message.myTurn){
-            console.log(message.myTurn);
+            // console.log(message.myTurn);
             glass(1);
             // document.querySelector('.glass').classList.remove('hidden');
             // document.querySelector('.glass').classList.add('show');
@@ -234,8 +244,8 @@ window.onload = function () {
         startTimer();
     }
     function showEnemyBattleCard(card, showDelay = delay.showEnemyCard) {
-        console.log('delay');
-        console.log(showDelay);
+        // console.log('delay');
+        // console.log(showDelay);
         let randCard = Math.floor(Math.random() * (3));
         let cls = ''
         if (randCard == 0) {
@@ -407,9 +417,9 @@ window.onload = function () {
     function animationDistribution() {
         for (let i = 1; i <= root.children.length; i++) {
             let item = root.children[i - 1];
-            console.log(item);
+            // console.log(item);
             setTimeout(() => {
-                console.log('Cart ' + i);
+                // console.log('Cart ' + i);
                 if (i % 2 === 1) {
                     item.classList.add(`myDistribution_${(i + 1) / 2}`);
                     setTimeout(() => {
@@ -488,7 +498,7 @@ window.onload = function () {
 
     function turn(card) {
         clearInterval(autoTurnId);
-        console.log(card);
+        // console.log(card);
         // game.turn = game.hand[+card];
         game.hand.forEach(item => {
             if(item.id === + card) {
@@ -496,7 +506,7 @@ window.onload = function () {
             }
         });
         // return card
-        console.log(game);
+        // console.log(game);
         socket.emit('turn', game);
     }
 
@@ -549,12 +559,10 @@ window.onload = function () {
             e.preventDefault();
         });
         battleField_2.addEventListener('drop', function (e) {
-
             this.append(current[0]);
-            console.log(e.target.firstElementChild.dataset.card);
+            // console.log(e.target.firstElementChild.dataset.card);
+            glass(1);
             turn(e.target.firstElementChild.dataset.card);
-            console.log(`Карти в руках [${arrPlayer_2}]`);
-            console.log(`Карти в бою [${arrBattle_2}]`);
         })
     };
 
@@ -564,8 +572,7 @@ window.onload = function () {
                 if(item.children.length) {
                     let idCard = item.firstElementChild.dataset.card;
                     game.hand.forEach(it => {
-                        if(it.id === +idCard) {
-
+                        if (it.id === +idCard) {
                             item.firstElementChild.remove();
                             item.insertAdjacentHTML('beforeend', getHtmlCard(it));
                         }
@@ -599,9 +606,13 @@ window.onload = function () {
                         arrPlayer_2.length = 3
                         box.append(current[0]);
                     }
-                    field.style.boxShadow = 'none'
                 });
-                field.style.boxShadow = '0px 0px 20px 1px lawngreen'
+
+                if (field.children.length > 0) {
+                    field.style.boxShadow = 'none';
+                } else {
+                    field.style.boxShadow = '0px 0px 20px 1px lawngreen'
+                }
             });
         });
     }

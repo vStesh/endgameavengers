@@ -168,32 +168,32 @@ function setCircleDasharray() {
 // })
 
 //flip
-let coin = document.querySelector('#coin');
-coin.addEventListener('click', function () {
-
-   let flipResult = Math.random();
-   coin.classList.remove();
-
-   setTimeout(function () {
-      if (flipResult <= 0.5) {
-         coin.classList.add('heads');
-         console.log('It is player 1');
-      }
-      else {
-         coin.classList.add('tails');
-         console.log('It is player 2');
-      }
-   }, 100)
-
-   setTimeout(function () {
-      coin.style.transition = '1s';
-      coin.style.left = '-100px';
-   }, 5000);
-
-   setTimeout(function () {
-      coin.style.display = 'none';
-   }, 6000);
-});
+// let coin = document.querySelector('#coin');
+// coin.addEventListener('click', function () {
+//
+//    let flipResult = Math.random();
+//    coin.classList.remove();
+//
+//    setTimeout(function () {
+//       if (flipResult <= 0.5) {
+//          coin.classList.add('heads');
+//          console.log('It is player 1');
+//       }
+//       else {
+//          coin.classList.add('tails');
+//          console.log('It is player 2');
+//       }
+//    }, 100)
+//
+//    setTimeout(function () {
+//       coin.style.transition = '1s';
+//       coin.style.left = '-100px';
+//    }, 5000);
+//
+//    setTimeout(function () {
+//       coin.style.display = 'none';
+//    }, 6000);
+// });
 
 // //carta
 // let carta = document.querySelector('#carta');
