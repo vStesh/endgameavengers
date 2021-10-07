@@ -25,7 +25,7 @@ const connect = (query) => {
 
 const start = async () => {
 
-    const [rows,fields] = connect(test);
+    const [rows,fields] = await connect(test);
     if(rows) {
         console.log('БД подключена');
         console.log(rows)
