@@ -28,7 +28,7 @@ const start = async () => {
     let testRes = connect(test);
     if(testRes) {
         console.log('БД подключена');
-        console.log()
+        console.log(testRes)
     } else {
         console.log('Ошибка подключения к БД')
     }
